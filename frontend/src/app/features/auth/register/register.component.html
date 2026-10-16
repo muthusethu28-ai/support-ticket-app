@@ -1,0 +1,48 @@
+<div class="container py-5" style="max-width: 460px;">
+  <div class="card card-shadow p-4">
+    <h2 class="mb-3">Register</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
+        @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+          <mat-error>Name is required.</mat-error>
+        }
+        @if (form.get('name')?.hasError('minlength')) {
+          <mat-error>Name is too short.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+          <mat-error>Email is required.</mat-error>
+        }
+        @if (form.get('email')?.hasError('email')) {
+          <mat-error>Enter a valid email.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100 mb-4">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+        @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+          <mat-error>Password is required.</mat-error>
+        }
+        @if (form.get('password')?.hasError('minlength')) {
+          <mat-error>Password must be at least 6 characters.</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="w-100" type="submit" [disabled]="form.invalid || submitting()">
+        @if (submitting()) { Creating account... } @else { Register }
+      </button>
+    </form>
+
+    <p class="text-center mt-3 mb-0">
+      Already have an account? <a routerLink="/login">Login</a>
+    </p>
+  </div>
+</div>
