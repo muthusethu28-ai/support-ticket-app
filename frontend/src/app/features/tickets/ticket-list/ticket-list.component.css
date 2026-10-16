@@ -1,0 +1,11 @@
+.ticket-row {
+  cursor: pointer;
+}
+
+.ticket-row:hover {
+  background: #f8f9fa;
+}
+
+.mat-mdc-table {
+  background: transparent;
+}

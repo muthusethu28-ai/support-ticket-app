@@ -1,0 +1,96 @@
+<div class="container py-4">
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <h2 class="mb-0">Tickets</h2>
+  </div>
+
+  <div class="row g-2 align-items-center mb-3">
+    <div class="col-md-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Status</mat-label>
+        <mat-select [formControl]="statusControl">
+          <mat-option value="">All</mat-option>
+          <mat-option value="open">Open</mat-option>
+          <mat-option value="in-progress">In progress</mat-option>
+          <mat-option value="resolved">Resolved</mat-option>
+          <mat-option value="closed">Closed</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Priority</mat-label>
+        <mat-select [formControl]="priorityControl">
+          <mat-option value="">All</mat-option>
+          <mat-option value="low">Low</mat-option>
+          <mat-option value="medium">Medium</mat-option>
+          <mat-option value="high">High</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Search by title</mat-label>
+        <input matInput [formControl]="searchControl" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <app-loader />
+  } @else if (error()) {
+    <app-error-message [message]="error()" />
+  } @else if (tickets().length === 0) {
+    <div class="text-center text-muted py-5">No tickets found.</div>
+  } @else {
+    <div class="table-responsive card-shadow rounded bg-white">
+      <table mat-table [dataSource]="tickets()" class="w-100">
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let ticket">{{ ticket.title }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let ticket">
+            <app-status-chip kind="status" [value]="ticket.status" />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="priority">
+          <th mat-header-cell *matHeaderCellDef>Priority</th>
+          <td mat-cell *matCellDef="let ticket">
+            <app-status-chip kind="priority" [value]="ticket.priority" />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdBy">
+          <th mat-header-cell *matHeaderCellDef>Created by</th>
+          <td mat-cell *matCellDef="let ticket">{{ creatorName(ticket) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Created</th>
+          <td mat-cell *matCellDef="let ticket">
+            {{ ticket.createdAt | date: 'medium' }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          class="ticket-row"
+          (click)="openTicket(row)"
+        ></tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [length]="pagination().total"
+      [pageIndex]="pagination().page - 1"
+      [pageSize]="pagination().limit"
+      [pageSizeOptions]="[5, 10, 25]"
+      (page)="onPageChange($event)"
+    ></mat-paginator>
+  }
+</div>
